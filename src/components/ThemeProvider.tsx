@@ -1,6 +1,12 @@
-"use client"; // This marks it as a client component
+"use client"; 
 
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
 
 // Create a context to share the theme state
 const ThemeContext = createContext<any>(null);
@@ -14,38 +20,31 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  // Effect to check localStorage for theme preference
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  // Initialize theme in the browser
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === "dark");
-    } else {
-      // Default to system preference
-      setIsDarkMode(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setTheme(storedTheme as "light" | "dark");
+      document.documentElement.classList.toggle("dark", storedTheme === "dark");
     }
   }, []);
-
-  // Effect to apply the theme to the <html> tag
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   // Toggle dark mode
   const toggleTheme = () => {
-    setIsDarkMode((prev) => !prev);
+    // setIsDarkMode((prev) => !prev);
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
-};
+}

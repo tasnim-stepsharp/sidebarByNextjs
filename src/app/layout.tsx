@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} bg-white dark:bg-slate-800 dark:text-white text-neutral-600`}>
         <ThemeProvider>  
           <div className="flex h-screen w-full">
             <Sidebar />

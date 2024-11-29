@@ -21,8 +21,8 @@ const SubMenuItem = ({ item }: { item: ISubItem }) => {
 
   return (
     <div
-      className={`text-sm hover:bg-gray-200 cursor-pointer p-2 my-1 rounded-lg font-medium${
-        isActive ? "bg-blue-100 text-blue-600" : "text-neutral-600"
+      className={`text-sm hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-gray-300 cursor-pointer p-2 my-1 rounded-lg font-medium${
+        isActive ? " bg-blue-100 dark:bg-gray-600  text-blue-600 dark:text-gray-200" : " text-neutral-600 dark:text-gray-200"
       }`}
       onClick={onClick}
     >

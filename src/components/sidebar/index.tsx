@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -6,7 +6,7 @@ import Image from "next/image";
 import SidebarItem from "./item";
 import SubMenuItem from "./sub-item";
 import HelpModal from "./helpmodal";
-import { useTheme } from "@/components/ThemeProvider"; 
+import { useTheme } from "@/components/ThemeProvider";
 import {
   LucideIcon,
   LayoutDashboard,
@@ -28,7 +28,7 @@ import {
   Github,
   Twitter,
   Sun,
-  Moon
+  Moon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -90,23 +90,18 @@ const items: ISidebarItem[] = [
   },
 ];
 
-// content for help modal
-const helpQuestions = [
-  { question: "What do we do?", answer: "We provide awesome services!" },
-  { question: "What are we?", answer: "We are a tech company." },
-  { question: "How to create a short link?", answer: "Use our link shortening service by visiting a tech company..." },
-  // add more questions as needed
-];
-
 const Sidebar = () => {
   const pathname = usePathname();
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<ISidebarItem | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState<{ top: number; left: number } | null>(null);
+  const [modalPosition, setModalPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showHelpIcon, setShowHelpIcon] = useState(true)
+  const [showHelpIcon, setShowHelpIcon] = useState(true);
   const helpIconRef = useRef<HTMLButtonElement | null>(null);
   const router = useRouter();
 
@@ -162,35 +157,60 @@ const Sidebar = () => {
     hiddenRight: { x: "100%", opacity: 0 },
   };
 
+  // content for help modal
+  const helpQuestions = [
+    { question: "What do we do?", answer: "We provide awesome services!" },
+    { question: "What are we?", answer: "We are a tech company." },
+    {
+      question: "How to create a short link?",
+      answer: "Use our link shortening service by visiting a tech company...",
+    },
+    // add more questions as needed
+  ];
   const filteredQuestions = helpQuestions.filter((item) =>
     item.question.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const [showSocialModal, setShowSocialModal] = useState(false);
 
+
+
+  const [showSocialModal, setShowSocialModal] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const handleModalToggle = () => {
     setShowSocialModal(!showSocialModal);
   };
 
-  const handleOutsideClick = (event: React.MouseEvent) => {
-    if ((event.target as HTMLElement).closest(".social-modal")) return;
-    setShowSocialModal(false);
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setShowSocialModal(false);
+    }
   };
-  const { isDarkMode, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    if (showSocialModal) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    } else {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [showSocialModal]);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="relative">
       {/*hamburger button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-10 md:hidden text-gray-700 p-2 rounded-full">
+        className="fixed top-4 left-4 z-10 md:hidden dark:text-gray-200 text-gray-700 p-2 rounded-full"
+      >
         <Menu />
       </button>
-
-      <div className={`fixed text-sm top-0 left-0 h-screen w-64 trans shadow-lg z-20 p-4 relative overflow-hidden 
-        ${!sidebarOpen ? 'sidebar' : ''}
-        ${isDarkMode ? "bg-slate-800 text-white" : "bg-neutral-100 text-neutral-600"}`}>
-
+      <div
+        className={`fixed text-sm top-0 left-0 h-screen w-64 trans shadow-lg z-20 p-4 relative overflow-hidden bg-neutral-100 dark:bg-slate-700 dark:text-white
+        ${!sidebarOpen ? "sidebar" : ""}
+       `}
+      >
         <div className="flex flex-col w-full">
           <div className="flex items-center justify-between space-x-3 mb-4">
             <Image
@@ -200,15 +220,24 @@ const Sidebar = () => {
               width={46}
               height={30}
             />
-            {showHelpIcon && (
+            <div className="flex items-center space-x-3">
+              {showHelpIcon && (
+                <button
+                  ref={helpIconRef}
+                  onClick={() => setModalOpen(!modalOpen)}
+                  className="dark:text-gray-200 text-gray-600 hover:text-blue-600 md:block hidden"
+                >
+                  {modalOpen ? <X size={15} /> : <CircleHelp size={15} />}
+                </button>
+              )}
               <button
-                ref={helpIconRef}
-                onClick={() => setModalOpen(!modalOpen)}
-                className="text-gray-600 hover:text-blue-600 md:block hidden"
+                onClick={toggleTheme}
+                className="text-gray-600 hover:text-blue-600 dark:text-white"
               >
-                {modalOpen ? <X size={15} /> : <CircleHelp size={15} />}
+                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
               </button>
-            )}
+            </div>
+
           </div>
 
           <div className="flex flex-col relative">
@@ -228,19 +257,24 @@ const Sidebar = () => {
                       key={index}
                       item={item}
                       onClick={() => toggleSubmenu(item)}
-                      isActive={!!(item === activeItem || (item.items && item.items.some(sub => sub.path === pathname)))}
+                      isActive={
+                        !!(
+                          item === activeItem ||
+                          (item.items &&
+                            item.items.some((sub) => sub.path === pathname))
+                        )
+                      }
                     />
                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
 
-
             {/* submenu for active item */}
             <AnimatePresence>
               {submenuOpen && activeItem && (
                 <motion.div
-                  className="absolute inset-0 bg-neutral-100 p-4 z-30"
+                  className="absolute inset-0 dark:bg-slate-700 bg-neutral-100 z-30"
                   initial="hiddenRight"
                   animate="visible"
                   exit="hiddenRight"
@@ -265,18 +299,15 @@ const Sidebar = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
           </div>
         </div>
 
         <div className="absolute bottom-4 left-0 w-full px-4">
-          <button onClick={toggleTheme} className="text-gray-600 hover:text-blue-600 mb-2">
-            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
+
           <div className="flex flex-col">
             <div
               onClick={handleModalToggle}
-              className="text-sm text-gray-600 cursor-pointer mb-2 hover:text-blue-600"
+              className="text-sm dark:text-gray-200 text-gray-600 cursor-pointer mb-2 hover:text-blue-600"
             >
               Where did you hear about us?
             </div>
@@ -284,7 +315,7 @@ const Sidebar = () => {
             {showSocialModal && (
               <motion.div
                 ref={modalRef}
-                className="absolute left-0 top-[-220px] w-full bg-white shadow-lg rounded-lg p-4 z-30"
+                className="absolute left-0 top-[-220px] w-full dark:bg-slate-600 bg-white shadow-lg rounded-lg p-4 z-30 social-modal"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -298,55 +329,61 @@ const Sidebar = () => {
                     width={46}
                     height={30}
                   />
-                  <X size={15} className="cursor-pointer" onClick={() => setShowSocialModal(false)} />
+                  <X
+                    size={15}
+                    className="cursor-pointer"
+                    onClick={() => setShowSocialModal(false)}
+                  />
                 </div>
 
-                <p className="text-neutral-600 text-sm mt-2">Where did you hear about dub?</p>
+                <p className="dark:text-gray-200 text-gray-600 text-sm mt-2">
+                  Where did you hear about dub?
+                </p>
 
-                <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="mt-4 grid grid-cols-2 gap-4 dark:text-gray-200 text-gray-600">
                   <a
                     href="https://facebook.com"
                     className="flex items-center border p-2 rounded-md space-x-2"
                   >
                     <Facebook size={25} />
-                    <span className="text-sm text-neutral-700">Facebook</span>
+                    <span className="text-sm ">Facebook</span>
                   </a>
                   <a
                     href="https://linkedin.com"
                     className="flex items-center border p-2 rounded-md space-x-2"
                   >
                     <Linkedin size={25} />
-                    <span className="text-sm text-neutral-700">LinkedIn</span>
+                    <span className="text-sm ">LinkedIn</span>
                   </a>
                   <a
                     href="https://github.com"
                     className="flex items-center border p-2 rounded-md space-x-2"
                   >
                     <Github size={25} />
-                    <span className="text-sm text-neutral-700">GitHub</span>
+                    <span className="text-sm ">GitHub</span>
                   </a>
                   <a
                     href="https://twitter.com"
                     className="flex items-center border p-2 rounded-md space-x-2"
                   >
                     <Twitter size={25} />
-                    <span className="text-sm text-neutral-700">Twitter</span>
+                    <span className="text-sm ">Twitter</span>
                   </a>
                 </div>
               </motion.div>
             )}
 
-            <div className="flex justify-between items-center text-sm text-gray-600 mt-4">
+            <div className="text-sm dark:text-gray-200 text-gray-600 mt-4">
               <Link
                 href="/contact-us"
-                className="flex items-center space-x-2 hover:text-blue-600"
+                className="flex items-center space-x-2 hover:text-blue-600 p-2"
               >
                 <Mail size={16} />
                 <span>Contact Us</span>
               </Link>
               <Link
                 href="/help-center"
-                className="flex items-center space-x-2 hover:text-blue-600"
+                className="flex items-center space-x-2 hover:text-blue-600 p-2"
               >
                 <LifeBuoy size={16} />
                 <span>Help Center</span>
@@ -354,7 +391,6 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       {sidebarOpen && (
