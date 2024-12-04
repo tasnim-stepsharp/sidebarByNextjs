@@ -16,9 +16,12 @@ const config: Config = {
           iconColor: "#636c80",
           lightBlue: "#ECECF8",
           darkGray: "#141622",
-
+          lightGray: "#5F636E",
+          lightGray2: "#EFF0F2",
+          offwhite: "#F3F6F8",
+          offwhite2: "#E3E4E5"
         },
-        
+
       },
     },
   },

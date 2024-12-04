@@ -9,20 +9,27 @@ import HelpModal from "./helpmodal";
 import { useTheme } from "@/components/ThemeProvider";
 import InboxSvg from "../icons/inboxSvg";
 import IssueSvg from "../icons/issueSvg";
+import ProjectSvg from "../icons/projectsSvg";
+import GeneralSvg from "../icons/generalSvg";
+import ApikeySvg from "../icons/apiKeysvg";
+import BillingSvg from "../icons/billingSvg";
+import DomainSvg from "../icons/domainSvg";
+import IntegrationSvg from "../icons/integrationSvg";
+import LibrarySvg from "../icons/librarySvg";
+import NotificationSvg from "../icons/notificationSvg";
+import OauthAppsSvg from "../icons/oauthAppsSvg";
+import PeopleSvg from "../icons/peopleSvg";
+import SecuritySvg from "../icons/securitySvg";
+import TeamsSvg from "../icons/teamsSvg";
+import ViewsSvg from "../icons/viewsSvg";
+import HelpSvg from "../icons/helpSvg";
+
+
 import {
-  LucideIcon,
-  LayoutDashboard,
-  BadgeDollarSign,
-  CircleUserRound,
-  Settings,
   CircleHelp,
   X,
-  WalletCards,
   ArrowLeft,
   Menu,
-  BellRing,
-  LockKeyhole,
-  Globe,
   Mail,
   LifeBuoy,
   Linkedin,
@@ -33,50 +40,103 @@ import {
   Moon,
 } from "lucide-react";
 import Link from "next/link";
-
+import SidebarHeader from "./SidebarHeader";
+import DraggableCards from "./DraggableCards";
 interface MainItem {
   name: string;
   path: string;
   icon: ReactNode;
-  items?: SubItem[];
+  subCategories?: SubCategory[];
 }
-
+interface SubCategory {
+  Category: string;
+  SubItems?: SubItem[];
+}
 interface SubItem {
   name: string;
   path: string;
   icon: ReactNode;
 }
-
 interface MainNav {
   dropdown: boolean;
-  mainItem?: MainItem[];
+  mainItems?: MainItem[];
 }
 
 const sectionOne: MainItem[] = [
   {
     name: "Inbox",
     path: "/",
-    icon: <InboxSvg/>,
+    icon: <InboxSvg />,
   },
   {
     name: "My issues",
-    path: "/transaction",
-    icon:<IssueSvg/>,
-    items: [
+    path: "/issues",
+    icon: <IssueSvg />,
+    subCategories: [
       {
-        name: "General",
-        path: "/settings",
-        icon: <InboxSvg/>,
+        Category: "Workspace",
+        SubItems: [
+          {
+            name: "General",
+            path: "/issues",
+            icon: <GeneralSvg />,
+          },
+          {
+            name: "Domain",
+            path: "/issues/domain",
+            icon: <DomainSvg />,
+          },
+          {
+            name: "Library",
+            path: "/issues/library",
+            icon: <LibrarySvg />,
+          },
+          {
+            name: "People",
+            path: "/issues/people",
+            icon: <PeopleSvg />,
+          },
+          {
+            name: "Billing",
+            path: "/issues/billing",
+            icon: <BillingSvg />,
+          },
+          {
+            name: "Integration",
+            path: "/issues/integration",
+            icon: <IntegrationSvg />,
+          },
+          {
+            name: "Security",
+            path: "/issues/security",
+            icon: <SecuritySvg />,
+          }
+        ],
       },
       {
-        name: "Security",
-        path: "/settings/security",
-        icon: <InboxSvg/>,
+        Category: "Developer",
+        SubItems: [
+          {
+            name: "Api keys",
+            path: "/issues/api",
+            icon: <ApikeySvg />,
+          },
+          {
+            name: "Oauth Apps",
+            path: "/issues/oauth",
+            icon: <OauthAppsSvg />,
+          },
+        ],
       },
       {
-        name: "Notifications",
-        path: "/settings/notifications",
-        icon: <InboxSvg/>,
+        Category: "Account",
+        SubItems: [
+          {
+            name: "Notifications",
+            path: "/issues/notifications",
+            icon: <NotificationSvg />,
+          },
+        ],
       },
     ],
   },
@@ -84,62 +144,309 @@ const sectionOne: MainItem[] = [
 
 const sectionTwo: MainItem[] = [
   {
-    name: "Settings",
-    path: "/settings",
-    icon: <InboxSvg/>,
-    items: [
+    name: "Projects",
+    path: "/projects",
+    icon: <ProjectSvg />,
+    subCategories: [
       {
-        name: "General",
-        path: "/settings",
-        icon: <InboxSvg/>,
+        Category: "Workspace",
+        SubItems: [
+          {
+            name: "General",
+            path: "/projects",
+            icon: <GeneralSvg />,
+          },
+          {
+            name: "Domain",
+            path: "/projects/domain",
+            icon: <DomainSvg />,
+          },
+          {
+            name: "Library",
+            path: "/projects/library",
+            icon: <LibrarySvg />,
+          },
+          {
+            name: "People",
+            path: "/projects/people",
+            icon: <PeopleSvg />,
+          },
+          {
+            name: "Billing",
+            path: "/projects/billing",
+            icon: <BillingSvg />,
+          },
+          {
+            name: "Integration",
+            path: "/projects/integration",
+            icon: <IntegrationSvg />,
+          },
+          {
+            name: "Security",
+            path: "/projects/security",
+            icon: <SecuritySvg />,
+          }
+        ],
       },
       {
-        name: "Security",
-        path: "/settings/security",
-        icon: <InboxSvg/>,
+        Category: "Developer",
+        SubItems: [
+          {
+            name: "Api keys",
+            path: "/projects/api",
+            icon: <ApikeySvg />,
+          },
+          {
+            name: "Oauth Apps",
+            path: "/projects/oauth",
+            icon: <OauthAppsSvg />,
+          },
+        ],
       },
       {
-        name: "Notifications",
-        path: "/settings/notifications",
-        icon: <InboxSvg/>,
+        Category: "Account",
+        SubItems: [
+          {
+            name: "Notifications",
+            path: "/projects/notifications",
+            icon: <NotificationSvg />,
+          },
+        ],
       },
     ],
   },
   {
-    name: "Projects",
-    path: "/projects",
-    icon: <InboxSvg/>,
-    items: [
+    name: "Views",
+    path: "/views",
+    icon: <ViewsSvg />,
+    subCategories: [
       {
-        name: "General",
-        path: "/projects",
-        icon: <InboxSvg/>,
+        Category: "Workspace",
+        SubItems: [
+          {
+            name: "General",
+            path: "/views",
+            icon: <GeneralSvg />,
+          },
+          {
+            name: "Domain",
+            path: "/views/domain",
+            icon: <DomainSvg />,
+          },
+          {
+            name: "Library",
+            path: "/views/library",
+            icon: <LibrarySvg />,
+          },
+          {
+            name: "People",
+            path: "/views/people",
+            icon: <PeopleSvg />,
+          },
+          {
+            name: "Billing",
+            path: "/views/billing",
+            icon: <BillingSvg />,
+          },
+          {
+            name: "Integration",
+            path: "/views/integration",
+            icon: <IntegrationSvg />,
+          },
+          {
+            name: "Security",
+            path: "/views/security",
+            icon: <SecuritySvg />,
+          }
+        ],
       },
       {
-        name: "Security",
-        path: "/projects/security",
-        icon: <InboxSvg/>,
+        Category: "Developer",
+        SubItems: [
+          {
+            name: "Api keys",
+            path: "/views/api",
+            icon: <ApikeySvg />,
+          },
+          {
+            name: "Oauth Apps",
+            path: "/views/oauth",
+            icon: <OauthAppsSvg />,
+          },
+        ],
       },
       {
-        name: "Notifications",
-        path: "/projects/notifications",
-        icon: <InboxSvg/>,
+        Category: "Account",
+        SubItems: [
+          {
+            name: "Notifications",
+            path: "/views/notifications",
+            icon: <NotificationSvg />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Teams",
+    path: "/teams",
+    icon: <TeamsSvg />,
+    subCategories: [
+      {
+        Category: "Workspace",
+        SubItems: [
+          {
+            name: "General",
+            path: "/teams",
+            icon: <GeneralSvg />,
+          },
+          {
+            name: "Domain",
+            path: "/teams/domain",
+            icon: <DomainSvg />,
+          },
+          {
+            name: "Library",
+            path: "/teams/library",
+            icon: <LibrarySvg />,
+          },
+          {
+            name: "People",
+            path: "/teams/people",
+            icon: <PeopleSvg />,
+          },
+          {
+            name: "Billing",
+            path: "/teams/billing",
+            icon: <BillingSvg />,
+          },
+          {
+            name: "Integration",
+            path: "/teams/integration",
+            icon: <IntegrationSvg />,
+          },
+          {
+            name: "Security",
+            path: "/teams/security",
+            icon: <SecuritySvg />,
+          }
+        ],
+      },
+      {
+        Category: "Developer",
+        SubItems: [
+          {
+            name: "Api keys",
+            path: "/teams/api",
+            icon: <ApikeySvg />,
+          },
+          {
+            name: "Oauth Apps",
+            path: "/teams/oauth",
+            icon: <OauthAppsSvg />,
+          },
+        ],
+      },
+      {
+        Category: "Account",
+        SubItems: [
+          {
+            name: "Notifications",
+            path: "/views/notifications",
+            icon: <NotificationSvg />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Issues",
+    path: "/issues",
+    icon: <IssueSvg />,
+    subCategories: [
+      {
+        Category: "Workspace",
+        SubItems: [
+          {
+            name: "General",
+            path: "/issues",
+            icon: <GeneralSvg />,
+          },
+          {
+            name: "Domain",
+            path: "/issues/domain",
+            icon: <DomainSvg />,
+          },
+          {
+            name: "Library",
+            path: "/issues/library",
+            icon: <LibrarySvg />,
+          },
+          {
+            name: "People",
+            path: "/issues/people",
+            icon: <PeopleSvg />,
+          },
+          {
+            name: "Billing",
+            path: "/issues/billing",
+            icon: <BillingSvg />,
+          },
+          {
+            name: "Integration",
+            path: "/issues/integration",
+            icon: <IntegrationSvg />,
+          },
+          {
+            name: "Security",
+            path: "/issues/security",
+            icon: <SecuritySvg />,
+          }
+        ],
+      },
+      {
+        Category: "Developer",
+        SubItems: [
+          {
+            name: "Api keys",
+            path: "/issues/api",
+            icon: <ApikeySvg />,
+          },
+          {
+            name: "Oauth Apps",
+            path: "/issues/oauth",
+            icon: <OauthAppsSvg />,
+          },
+        ],
+      },
+      {
+        Category: "Account",
+        SubItems: [
+          {
+            name: "Notifications",
+            path: "/issues/notifications",
+            icon: <NotificationSvg />,
+          },
+        ],
       },
     ],
   },
 ];
 
-const mainNav: MainNav[] = [
+const mainNavs: MainNav[] = [
   {
     dropdown: false,
-    mainItem: sectionOne,
+    mainItems: sectionOne,
   },
   {
     dropdown: true,
-    mainItem: sectionTwo,
+    mainItems: sectionTwo,
+  },
+  {
+    dropdown: true,
+    mainItems: sectionTwo,
   }
 ]
-
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -151,12 +458,8 @@ const Sidebar = () => {
     top: number;
     left: number;
   } | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showHelpIcon, setShowHelpIcon] = useState(true);
   const helpIconRef = useRef<HTMLButtonElement | null>(null);
   const router = useRouter();
-
-  const [showSocialLinks, setShowSocialLinks] = useState(false);
 
   const toggleSubmenu = (item: MainItem) => {
     setActiveItem(item);
@@ -164,46 +467,46 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    const result = findMatchingPath(sectionOne, pathname);
+    const result = findMatchingPath([...sectionOne, ...sectionTwo], pathname);
 
-    if (!result || !result?.items || result?.items?.length <= 0) {
+    if (!result || !result?.subCategories || result?.subCategories?.length <= 0) {
       setActiveItem(null);
       setSubmenuOpen(false);
       return;
     }
-
     setActiveItem(result);
     setSubmenuOpen(true);
   }, [pathname]);
 
+
+  function findMatchingPath(subCategories: any, pathName: any) {
+    for (const item of subCategories) {
+      if (item.path !== "/" && pathName.includes(item.path)) {
+        return item;
+      }
+      if (item.subCategories) {
+        const found: any = findMatchingPath(item.subCategories, pathName);
+        if (found) {
+          return item;
+        }
+      }
+    }
+    return null;
+  }
+
   useEffect(() => {
     if (modalOpen && helpIconRef.current) {
+      console.log('Help Icon Ref:', helpIconRef.current); // Check if ref is populated
       const rect = helpIconRef.current.getBoundingClientRect();
       setModalPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY - 230,
+        left: rect.right + window.scrollX - 20,
       });
     }
   }, [modalOpen]);
 
-  function findMatchingPath(items: any, pathName: any) {
-    for (const item of items) {
-      if (item.path !== "/" && pathName.includes(item.path)) {
-        return item;
-      }
-      if (item.items) {
-        const found: any = findMatchingPath(item.items, pathName);
-        if (found) {
-          return found;
-        }
-      }
-    }
-
-    return null;
-  }
 
   const [collapsedItems, setCollapsedItems] = useState<Record<number, boolean>>({});
-
 
   const toggleCollapse = (index: number) => {
     setCollapsedItems(prevState => ({
@@ -212,50 +515,8 @@ const Sidebar = () => {
     }));
   };
 
-  const variants = {
-    hiddenLeft: { x: "-100%", opacity: 0 },
-    visible: { x: 0, opacity: 1 },
-    hiddenRight: { x: "100%", opacity: 0 },
-  };
-
-  // content for help modal
-  const helpQuestions = [
-    { question: "What do we do?", answer: "We provide awesome services!" },
-    { question: "What are we?", answer: "We are a tech company." },
-    {
-      question: "How to create a short link?",
-      answer: "Use our link shortening service by visiting a tech company...",
-    },
-    // add more questions as needed
-  ];
-  const filteredQuestions = helpQuestions.filter((item) =>
-    item.question.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-
-
-  const [showSocialModal, setShowSocialModal] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const handleModalToggle = () => {
-    setShowSocialModal(!showSocialModal);
-  };
 
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      setShowSocialModal(false);
-    }
-  };
-
-  useEffect(() => {
-    if (showSocialModal) {
-      document.addEventListener("mousedown", handleOutsideClick);
-    } else {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, [showSocialModal]);
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -263,248 +524,181 @@ const Sidebar = () => {
       {/*hamburger button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-10 md:hidden dark:text-gray-200 text-sidebar-darkGray p-2 rounded-full"
-      >
+        className="fixed top-4 left-4 z-10  dark:text-sidebar-offwhite2 text-sidebar-darkGray p-2 rounded-full">
         <Menu />
       </button>
       <div
         className={`fixed text-sm top-0 left-0 h-screen w-[248px] trans shadow-lg z-20 p-4 relative overflow-hidden bg-neutral-100 dark:bg-slate-700 dark:text-white
-        ${!sidebarOpen ? "sidebar" : ""}
-       `}
+  ${!sidebarOpen ? "sidebar" : ""}`}
+        style={{ display: "flex", flexDirection: "column" }} // Add Flexbox
       >
-        <div className="flex flex-col w-full">
-          <div className="flex items-center justify-between space-x-3 mb-4">
-            <Image
-              className=""
-              src="/logo.svg"
-              alt="Logo"
-              width={46}
-              height={30}
-            />
-            <div className="flex items-center space-x-3">
-              {showHelpIcon && (
-                <button
-                  ref={helpIconRef}
-                  onClick={() => setModalOpen(!modalOpen)}
-                  className="dark:text-gray-200 text-gray-600 hover:text-blue-600 md:block hidden"
-                >
-                  {modalOpen ? <X size={15} /> : <CircleHelp size={15} />}
-                </button>
-              )}
-              <button
-                onClick={toggleTheme}
-                className="text-gray-600 hover:text-blue-600 dark:text-white"
-              >
-                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-              </button>
-            </div>
+        {/* Header Section */}
+        <SidebarHeader userName="Stan A. Garfield" profilePic="/images/user.svg" />
 
-          </div>
-
-          <div className="flex flex-col relative">
-            {/* main menu items */}
-            <AnimatePresence>
-              {!submenuOpen && (
-                <motion.div
-                  className="flex flex-col"
-                  initial="hiddenLeft"
-                  animate="visible"
-                  exit="hiddenLeft"
-                  variants={variants}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="space-y-4">
-                    {mainNav.map((mainItem, index) => (
-                      <div key={index} className="dropdown-container">
-                        {mainItem.dropdown && (
-                          <div className="border-b">
-                            <button
-                              onClick={() => toggleCollapse(index)}
-                              className="w-full text-left px-4 py-2 bg-blue-500 text-white rounded-md">
-                              {collapsedItems[index] ? 'Expand' : 'Collapse'} Dropdown
-                            </button>
-
+        {/* Main Content */}
+        <div className="flex-grow overflow-y-auto">
+          <div className="w-full">
+            <div className="flex flex-col relative">
+              {/* Main menu items */}
+              <AnimatePresence>
+                {!submenuOpen && (
+                  <motion.div
+                    className="flex flex-col"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="space-y-4">
+                      {mainNavs.map((mainNav, index) => (
+                        <div key={index} className="dropdown-container">
+                          <div className="">
+                            {mainNav.dropdown && (
+                              <button
+                                onClick={() => toggleCollapse(index)}
+                                className="w-full text-left flex items-center"
+                              >
+                                <p className="text-sidebar-lightGray font-normal text-xs mr-2">
+                                  Workspace
+                                </p>
+                                <div
+                                  className={`transition-transform duration-300 ${collapsedItems[index]
+                                    ? "rotate-180 mt-1"
+                                    : "rotate-0 pt-1"
+                                    }`}
+                                >
+                                  <Image
+                                    src="/images/downArrow.svg"
+                                    alt="Arrow"
+                                    width={7}
+                                    height={5}
+                                  />
+                                </div>
+                              </button>
+                            )}
                             <motion.div
                               className="dropdown-items mt-2"
-                              initial={{ opacity: 0, height: 0, y: -20, display: 'none' }}
+                              initial={{ opacity: 0, height: 0, y: -20, display: "none" }}
                               animate={{
                                 opacity: collapsedItems[index] ? 0 : 1,
-                                height: collapsedItems[index] ? 0 : 'auto',
+                                height: collapsedItems[index] ? 0 : "auto",
                                 y: collapsedItems[index] ? -20 : 0,
-                                display: collapsedItems[index] ? 'none' : 'block',
+                                display: collapsedItems[index] ? "none" : "block",
                               }}
                               exit={{
                                 opacity: 0,
                                 height: 0,
                                 y: -20,
-                                display: 'none',
+                                display: "none",
                               }}
                               transition={{
                                 duration: 0.3,
-                                ease: 'easeInOut',
+                                ease: "easeInOut",
                               }}
                             >
-                              {mainItem.mainItem?.map((item, subIndex) => (
+                              {mainNav.mainItems?.map((mainItem, subIndex) => (
                                 <SidebarItem
                                   key={subIndex}
-                                  item={item}
-                                  onClick={() => toggleSubmenu(item)}
-                                  isActive={!!(
-                                    item === activeItem ||
-                                    (item.items && item.items.some((sub) => sub.path === pathname))
-                                  )}
+                                  mainItem={mainItem}
+                                  onClick={() => toggleSubmenu(mainItem)}
+                                  isActive={
+                                    !!(
+                                      mainItem === activeItem ||
+                                      (mainItem && mainItem.path === pathname)
+                                    )
+                                  }
                                 />
                               ))}
                             </motion.div>
                           </div>
-                        )}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
+              {/* Submenu for active item */}
+              <AnimatePresence>
+                {submenuOpen && activeItem && (
+                  <motion.div
+                    className="absolute inset-0 dark:bg-slate-700 bg-neutral-100 z-30"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div
+                      className="cursor-pointer text-blue-600 flex items-center space-x-2 pb-4 pt-4"
+                      onClick={() => {
+                        setSubmenuOpen(false);
+                        setActiveItem(null);
+                        router.push("/");
+                      }}
+                    >
+                      <ArrowLeft size={15} />
+                      <span className="font-semibold">{activeItem.name}</span>
+                    </div>
 
-                        {/* For main items that don't have dropdown */}
-                        {!mainItem.dropdown && (
-                          <div>
-                            {mainItem.mainItem?.map((item, subIndex) => (
-                              <SidebarItem
-                                key={subIndex}
-                                item={item}
-                                onClick={() => toggleSubmenu(item)}
-                                isActive={!!(
-                                  item === activeItem ||
-                                  (item.items && item.items.some((sub) => sub.path === pathname))
-                                )}
-                              />
-                            ))}
-                          </div>
-                        )}
+                    {activeItem.subCategories?.map((subCategory) => (
+                      <div>
+                        <p className="text-sidebar-lightGray font-normal text-xs py-2">
+                          {subCategory.Category}
+                        </p>
+                        <div>
+                          {subCategory.SubItems?.map((subItem) => (
+                            <SubMenuItem key={subItem.path} item={subItem} />
+                          ))}
+                        </div>
                       </div>
                     ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* submenu for active item */}
-            <AnimatePresence>
-              {submenuOpen && activeItem && (
-                <motion.div
-                  className="absolute inset-0 dark:bg-slate-700 bg-neutral-100 z-30"
-                  initial="hiddenRight"
-                  animate="visible"
-                  exit="hiddenRight"
-                  variants={variants}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div
-                    className="cursor-pointer text-blue-600 flex items-center space-x-2 pb-4"
-                    onClick={() => {
-                      setSubmenuOpen(false);
-                      setActiveItem(null);
-                      router.push("/");
-                    }}
-                  >
-                    <ArrowLeft size={15} />
-                    <span className="font-semibold">{activeItem.name}</span>
-                  </div>
-
-                  {activeItem.items?.map((subItem) => (
-                    <SubMenuItem key={subItem.path} item={subItem} />
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
-        <div className="absolute bottom-4 left-0 w-full px-4">
-
-          <div className="flex flex-col">
-            <div
-              onClick={handleModalToggle}
-              className="text-sm dark:text-gray-200 text-gray-600 cursor-pointer mb-2 hover:text-blue-600"
-            >
-              Where did you hear about us?
-            </div>
-
-            {showSocialModal && (
-              <motion.div
-                ref={modalRef}
-                className="absolute left-0 top-[-220px] w-full dark:bg-slate-600 bg-white shadow-lg rounded-lg p-4 z-30 social-modal"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="flex justify-between items-center">
-                  <Image
-                    className=""
-                    src="/logo.svg"
-                    alt="Logo"
-                    width={46}
-                    height={30}
-                  />
-                  <X
-                    size={15}
-                    className="cursor-pointer"
-                    onClick={() => setShowSocialModal(false)}
-                  />
+        {/* Footer Section */}
+        <div className="mt-auto">
+          <div className="text-sm mt-4">
+            <div className="relative"> {/* Ensure this is relative for modal positioning */}
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <HelpSvg />
+                  <p>Help</p>
                 </div>
 
-                <p className="dark:text-gray-200 text-gray-600 text-sm mt-2">
-                  Where did you hear about dub?
-                </p>
+                {/* Help Icon + Modal */}
+                <div className="relative inline-block">
+                  <button
+                    ref={helpIconRef}
+                    onClick={() => setModalOpen(!modalOpen)}
+                    className="pr-10 pt-1 cursor-pointer"
+                  >
+                    <Image
+                      src="/images/chevron-right.svg"
+                      alt="right arrow"
+                      width={5}
+                      height={4}
+                    />
+                  </button>
 
-                <div className="mt-4 grid grid-cols-2 gap-4 dark:text-gray-200 text-gray-600">
-                  <a
-                    href="https://facebook.com"
-                    className="flex items-center border p-2 rounded-md space-x-2"
-                  >
-                    <Facebook size={25} />
-                    <span className="text-sm ">Facebook</span>
-                  </a>
-                  <a
-                    href="https://linkedin.com"
-                    className="flex items-center border p-2 rounded-md space-x-2"
-                  >
-                    <Linkedin size={25} />
-                    <span className="text-sm ">LinkedIn</span>
-                  </a>
-                  <a
-                    href="https://github.com"
-                    className="flex items-center border p-2 rounded-md space-x-2"
-                  >
-                    <Github size={25} />
-                    <span className="text-sm ">GitHub</span>
-                  </a>
-                  <a
-                    href="https://twitter.com"
-                    className="flex items-center border p-2 rounded-md space-x-2"
-                  >
-                    <Twitter size={25} />
-                    <span className="text-sm ">Twitter</span>
-                  </a>
+                  {modalOpen && (
+                    <HelpModal
+                      modalOpen={modalOpen}
+                      modalPosition={modalPosition}
+                      closeModal={() => setModalOpen(false)}
+                      helpIconRef={helpIconRef} // Pass helpIconRef
+                    />
+                  )}
                 </div>
-              </motion.div>
-            )}
-
-            <div className="text-sm dark:text-gray-200 text-gray-600 mt-4">
-              <Link
-                href="/contact-us"
-                className="flex items-center space-x-2 hover:text-blue-600 p-2"
-              >
-                <Mail size={16} />
-                <span>Contact Us</span>
-              </Link>
-              <Link
-                href="/help-center"
-                className="flex items-center space-x-2 hover:text-blue-600 p-2"
-              >
-                <LifeBuoy size={16} />
-                <span>Help Center</span>
-              </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
 
       {sidebarOpen && (
         <div
@@ -512,14 +706,7 @@ const Sidebar = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      <HelpModal
-        modalOpen={modalOpen}
-        modalPosition={modalPosition}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        filteredQuestions={filteredQuestions}
-        closeModal={() => setModalOpen(false)}
-      />
+
     </div>
   );
 };

@@ -1,33 +1,40 @@
 import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MoveRight, Mail, LifeBuoy } from "lucide-react"; 
-import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter
+import Link from "next/link"; // Import Link for internal navigation
+import ShortCutSvg from "../icons/shortcutSvg";
+import LinkSvg from "../icons/linkSvg";
+
+interface MenuItem {
+  title: string;
+  icon: React.ReactNode;
+  external?: boolean; // Whether the link opens in a new tab
+  link?: string; // URL to navigate to (external links)
+  path?: string; // Internal navigation path
+  onClick?: () => void; // Callback for custom actions
+}
 
 interface HelpModalProps {
   modalOpen: boolean;
   modalPosition: { top: number; left: number } | null;
-  searchQuery: string;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  filteredQuestions: { question: string; answer: string }[];
   closeModal: () => void;
+  helpIconRef: React.RefObject<HTMLButtonElement>;
 }
 
 const HelpModal: React.FC<HelpModalProps> = ({
   modalOpen,
   modalPosition,
-  searchQuery,
-  setSearchQuery,
-  filteredQuestions,
   closeModal,
+  helpIconRef,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const helpIconRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (modalOpen) {
       const handleClickOutside = (event: MouseEvent) => {
         if (
-          modalRef.current && !modalRef.current.contains(event.target as Node) &&
+          modalRef.current &&
+          !modalRef.current.contains(event.target as Node) &&
           !helpIconRef.current?.contains(event.target as Node)
         ) {
           closeModal();
@@ -39,16 +46,25 @@ const HelpModal: React.FC<HelpModalProps> = ({
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [modalOpen, closeModal]);
+  }, [modalOpen, closeModal, helpIconRef]);
+
+  const menuItems: MenuItem[] = [
+    { title: "Shortcuts", icon: <ShortCutSvg />, path: "/shortcuts" },
+    { title: "Docs", icon: <ShortCutSvg />, external: true, link: "https://docs.example.com" },
+    { title: "API Docs", icon: <ShortCutSvg />, external: true, link: "https://api.example.com" },
+    { title: "Linear Mobile", icon: <ShortCutSvg />, external: true, link: "https://mobile.example.com" },
+    { title: "Contact Us", icon: <ShortCutSvg />, path: "/contact-us" },
+    { title: "Settings", icon: <ShortCutSvg />, path: "/settings" },
+  ];
 
   return (
     <AnimatePresence>
       {modalOpen && modalPosition && (
         <motion.div
-          className="fixed dark:bg-slate-600 dark:text-gray-300 bg-white p-6 shadow-lg rounded-lg z-30 w-[500px] overflow-y-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          className="text-sm text-sidebar-darkGray fixed dark:bg-slate-600 dark:text-gray-300 bg-white shadow-lg rounded-lg w-[240px] z-50"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.3 }}
           style={{
             top: `${modalPosition.top}px`,
@@ -56,56 +72,57 @@ const HelpModal: React.FC<HelpModalProps> = ({
           }}
           ref={modalRef}
         >
-          <h2 className="text-xl font-semibold">👋 How can we help?</h2>
-          <input
-            type="text"
-            placeholder="Search help topics..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full mt-4 p-2 border-b border-gray-300 outline-none dark:bg-transparent"
-          />
-          <div className="mt-4">
-            {filteredQuestions.length > 0 ? (
-              filteredQuestions.map((item) => (
-                <div
-                  key={item.question}
-                  className="p-2 dark:text-gray-200 text-gray-600 text-sm flex justify-between items-center cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-500 transition duration-200"
+          <div className="flex flex-col">
+            {menuItems.map((item, index) => (
+              item.external && item.link ? (
+                // External link (opens in new tab)
+                <a
+                  key={index}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between border-b py-2 border-sidebar-lightGray2 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer"
+                  onClick={closeModal} // Close modal on click
                 >
-                  <Link
-                    href="#"
-                    className="flex justify-between items-center w-full group-hover:text-blue-600 dark:group-hover:text-blue-300"
-                  >
-                    <div>
-                      <p className="font-semibold">{item.question}</p>
-                      <p className="text-gray-400">{item.answer}</p>
-                    </div>
-                    <MoveRight
-                      size={16}
-                      className="ml-2 group-hover:block hidden text-blue-600"
-                    />
-                  </Link>
+                  <div className="flex items-center space-x-2 px-4">
+                    <div>{item.icon}</div>
+                    <span className="text-sm">{item.title}</span>
+                  </div>
+                  <div className="pr-4">
+                    <LinkSvg />
+                  </div>
+                </a>
+              ) : item.path ? (
+                // Internal link using Next.js Link
+                <Link
+                  key={index}
+                  href={item.path}
+                  passHref
+                  onClick={closeModal} // Close modal on click
+                  className="flex items-center justify-between border-b py-2 border-sidebar-lightGray2 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer"
+                >
+                  <div className="flex items-center space-x-2 px-4">
+                    <div>{item.icon}</div>
+                    <span className="text-sm">{item.title}</span>
+                  </div>
+                </Link>
+              ) : (
+                // Custom action
+                <div
+                  key={index}
+                  className="flex items-center justify-between border-b py-2 border-sidebar-lightGray2 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer"
+                  onClick={() => {
+                    item.onClick && item.onClick();
+                    closeModal();
+                  }}
+                >
+                  <div className="flex items-center space-x-2 px-4">
+                    <div>{item.icon}</div>
+                    <span className="text-sm">{item.title}</span>
+                  </div>
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-400">No results found</p>
-            )}
-          </div>
-
-          <div className="mt-6 flex justify-between items-center border-t pt-4 text-gray-600 dark:text-gray-200">
-            <Link
-              href="/contact-us"
-              className="flex items-center text-sm hover:text-blue-600  space-x-2"
-            >
-              <Mail size={16} />
-              <span>Contact Us</span>
-            </Link>
-            <Link
-              href="/help-center"
-              className="flex items-center text-sm hover:text-blue-600 space-x-2"
-            >
-              <LifeBuoy size={16} />
-              <span>Help Center</span>
-            </Link>
+              )
+            ))}
           </div>
         </motion.div>
       )}
