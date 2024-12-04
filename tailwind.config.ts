@@ -12,9 +12,13 @@ const config: Config = {
       colors: {
         sidebar: {
           active: "#6b32ec",
-          background: "#f5f5ff",
+          background: "#F3F6F803",
           iconColor: "#636c80",
+          lightBlue: "#ECECF8",
+          darkGray: "#141622",
+
         },
+        
       },
     },
   },

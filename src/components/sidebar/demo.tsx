@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, ReactNode } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -7,8 +7,6 @@ import SidebarItem from "./item";
 import SubMenuItem from "./sub-item";
 import HelpModal from "./helpmodal";
 import { useTheme } from "@/components/ThemeProvider";
-import InboxSvg from "../icons/inboxSvg";
-import IssueSvg from "../icons/issueSvg";
 import {
   LucideIcon,
   LayoutDashboard,
@@ -37,14 +35,14 @@ import Link from "next/link";
 interface MainItem {
   name: string;
   path: string;
-  icon: ReactNode;
+  icon: LucideIcon;
   items?: SubItem[];
 }
 
 interface SubItem {
   name: string;
   path: string;
-  icon: ReactNode;
+  icon: LucideIcon;
 }
 
 interface MainNav {
@@ -54,31 +52,14 @@ interface MainNav {
 
 const sectionOne: MainItem[] = [
   {
-    name: "Inbox",
+    name: "Dashboard",
     path: "/",
-    icon: <InboxSvg/>,
+    icon: LayoutDashboard,
   },
   {
-    name: "My issues",
+    name: "Transaction",
     path: "/transaction",
-    icon:<IssueSvg/>,
-    items: [
-      {
-        name: "General",
-        path: "/settings",
-        icon: <InboxSvg/>,
-      },
-      {
-        name: "Security",
-        path: "/settings/security",
-        icon: <InboxSvg/>,
-      },
-      {
-        name: "Notifications",
-        path: "/settings/notifications",
-        icon: <InboxSvg/>,
-      },
-    ],
+    icon: BadgeDollarSign,
   },
 ];
 
@@ -86,44 +67,44 @@ const sectionTwo: MainItem[] = [
   {
     name: "Settings",
     path: "/settings",
-    icon: <InboxSvg/>,
+    icon: Settings,
     items: [
       {
         name: "General",
         path: "/settings",
-        icon: <InboxSvg/>,
+        icon: Globe,
       },
       {
         name: "Security",
         path: "/settings/security",
-        icon: <InboxSvg/>,
+        icon: LockKeyhole,
       },
       {
         name: "Notifications",
         path: "/settings/notifications",
-        icon: <InboxSvg/>,
+        icon: BellRing,
       },
     ],
   },
   {
     name: "Projects",
     path: "/projects",
-    icon: <InboxSvg/>,
+    icon: Settings,
     items: [
       {
         name: "General",
         path: "/projects",
-        icon: <InboxSvg/>,
+        icon: Globe,
       },
       {
         name: "Security",
         path: "/projects/security",
-        icon: <InboxSvg/>,
+        icon: LockKeyhole,
       },
       {
         name: "Notifications",
         path: "/projects/notifications",
-        icon: <InboxSvg/>,
+        icon: BellRing,
       },
     ],
   },
@@ -263,12 +244,12 @@ const Sidebar = () => {
       {/*hamburger button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-10 md:hidden dark:text-gray-200 text-sidebar-darkGray p-2 rounded-full"
+        className="fixed top-4 left-4 z-10 md:hidden dark:text-gray-200 text-gray-700 p-2 rounded-full"
       >
         <Menu />
       </button>
       <div
-        className={`fixed text-sm top-0 left-0 h-screen w-[248px] trans shadow-lg z-20 p-4 relative overflow-hidden bg-neutral-100 dark:bg-slate-700 dark:text-white
+        className={`fixed text-sm top-0 left-0 h-screen w-64 trans shadow-lg z-20 p-4 relative overflow-hidden bg-neutral-100 dark:bg-slate-700 dark:text-white
         ${!sidebarOpen ? "sidebar" : ""}
        `}
       >

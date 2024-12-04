@@ -1,11 +1,12 @@
 import { ChevronDown, LucideIcon } from "lucide-react";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import React from "react";
 
 interface ISidebarItem {
   name: string;
   path: string;
-  icon: LucideIcon;
+  icon: ReactNode;
   items?: ISubItem[];
 }
 
@@ -21,7 +22,7 @@ interface SidebarItemProps {
 }
 
 const SidebarItem = ({ item, onClick, isActive }: SidebarItemProps) => {
-  const { name, icon: Icon, items, path } = item;
+  const { name, icon, items, path } = item;
   const router = useRouter();
   const pathname = usePathname();
 
@@ -44,16 +45,21 @@ const SidebarItem = ({ item, onClick, isActive }: SidebarItemProps) => {
   return (
     <div
       className={`flex my-1 items-center p-2 sidebar-item rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-gray-300 cursor-pointer duration-200 justify-between
-      ${isActive || isItemActive ? "dark:bg-gray-600 bg-blue-100 dark:text-gray-200 text-blue-600" : "dark:text-gray-200 text-neutral-600"}`} 
-      onClick={handleClick}
-    >
+      ${isActive || isItemActive ? "dark:bg-gray-600 bg-sidebar-lightBlue dark:text-gray-200 text-blue-600" : "dark:text-gray-200 text-neutral-600"}`}
+      onClick={handleClick}>
       <div className="flex items-center space-x-2">
-        <Icon size={20} className="sidebar-icon" />
+        <div
+          className={`sidebar-icon ${isActive || isItemActive ? "text-blue-600 dark:text-gray-200" : "text-neutral-600 dark:text-gray-400"}`}
+        >
+          {React.cloneElement(icon as React.ReactElement, {
+            isActive: isActive || isItemActive, 
+          })}
+        </div>
         <p className="text-sm font-medium">{name}</p>
       </div>
-  
     </div>
   );
 };
 
-export default SidebarItem;
+export default SidebarItem
+
