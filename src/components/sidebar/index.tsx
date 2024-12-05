@@ -6,7 +6,6 @@ import Image from "next/image";
 import SidebarItem from "./item";
 import SubMenuItem from "./sub-item";
 import HelpModal from "./helpmodal";
-import { useTheme } from "@/components/ThemeProvider";
 import InboxSvg from "../icons/inboxSvg";
 import IssueSvg from "../icons/issueSvg";
 import ProjectSvg from "../icons/projectsSvg";
@@ -26,22 +25,15 @@ import HelpSvg from "../icons/helpSvg";
 
 
 import {
-  CircleHelp,
-  X,
-  ArrowLeft,
   Menu,
-  Mail,
-  LifeBuoy,
-  Linkedin,
-  Facebook,
-  Github,
-  Twitter,
-  Sun,
-  Moon,
 } from "lucide-react";
-import Link from "next/link";
 import SidebarHeader from "./SidebarHeader";
-import DraggableCards from "./DraggableCards";
+import DraggableCards from "./draggableCards";
+import ArrowRightSvg from "../icons/arrowRightSvg";
+import ProgressBar from "./progressbar";
+import ArrowLeftSvg from "../icons/arrowLeftSvg";
+import ChevronRightSvg from "../icons/chevronRightSvg";
+import DownArrowSvg from "../icons/downArrowSvg";
 interface MainItem {
   name: string;
   path: string;
@@ -496,7 +488,6 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (modalOpen && helpIconRef.current) {
-      console.log('Help Icon Ref:', helpIconRef.current); // Check if ref is populated
       const rect = helpIconRef.current.getBoundingClientRect();
       setModalPosition({
         top: rect.top + window.scrollY - 230,
@@ -515,10 +506,6 @@ const Sidebar = () => {
     }));
   };
 
-  const modalRef = useRef<HTMLDivElement | null>(null);
-
-  const { theme, toggleTheme } = useTheme();
-
   return (
     <div className="relative">
       {/*hamburger button */}
@@ -528,16 +515,16 @@ const Sidebar = () => {
         <Menu />
       </button>
       <div
-        className={`fixed text-sm top-0 left-0 h-screen w-[248px] trans shadow-lg z-20 p-4 relative overflow-hidden bg-neutral-100 dark:bg-slate-700 dark:text-white
-  ${!sidebarOpen ? "sidebar" : ""}`}
-        style={{ display: "flex", flexDirection: "column" }} // Add Flexbox
+        className={`fixed text-sm top-0 left-0 h-screen w-[248px] trans shadow-lg z-20 px-4 pt-5 pb-7 dark:text-sidebar-offwhite2 text-sidebar-darkGray relative overflow-hidden bg-sidebar-background dark:bg-Darksidebar-slate-500
+    ${!sidebarOpen ? "sidebar" : ""}`}
+        style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
       >
         {/* Header Section */}
         <SidebarHeader userName="Stan A. Garfield" profilePic="/images/user.svg" />
 
-        {/* Main Content */}
-        <div className="flex-grow overflow-y-auto">
-          <div className="w-full">
+        {/* Middle Section */}
+        <div className="flex-grow ">
+          <div className="w-full ">
             <div className="flex flex-col relative">
               {/* Main menu items */}
               <AnimatePresence>
@@ -547,7 +534,7 @@ const Sidebar = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.4 }}
                   >
                     <div className="space-y-4">
                       {mainNavs.map((mainNav, index) => (
@@ -558,7 +545,7 @@ const Sidebar = () => {
                                 onClick={() => toggleCollapse(index)}
                                 className="w-full text-left flex items-center"
                               >
-                                <p className="text-sidebar-lightGray font-normal text-xs mr-2">
+                                <p className="text-sidebar-lightGray dark:text-Darksidebar-gray-100 font-normal text-xs mr-2">
                                   Workspace
                                 </p>
                                 <div
@@ -567,29 +554,20 @@ const Sidebar = () => {
                                     : "rotate-0 pt-1"
                                     }`}
                                 >
-                                  <Image
-                                    src="/images/downArrow.svg"
-                                    alt="Arrow"
-                                    width={7}
-                                    height={5}
-                                  />
+                                  <DownArrowSvg/>
                                 </div>
                               </button>
                             )}
                             <motion.div
                               className="dropdown-items mt-2"
-                              initial={{ opacity: 0, height: 0, y: -20, display: "none" }}
+                              initial={{ opacity: 0, display: "none" }}  
                               animate={{
                                 opacity: collapsedItems[index] ? 0 : 1,
-                                height: collapsedItems[index] ? 0 : "auto",
-                                y: collapsedItems[index] ? -20 : 0,
-                                display: collapsedItems[index] ? "none" : "block",
+                                display: collapsedItems[index] ? "none" : "block",  
                               }}
                               exit={{
                                 opacity: 0,
-                                height: 0,
-                                y: -20,
-                                display: "none",
+                                display: "none",  
                               }}
                               transition={{
                                 duration: 0.3,
@@ -622,27 +600,27 @@ const Sidebar = () => {
               <AnimatePresence>
                 {submenuOpen && activeItem && (
                   <motion.div
-                    className="absolute inset-0 dark:bg-slate-700 bg-neutral-100 z-30"
+                    className="absolute inset-0 z-30"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.4 }}
                   >
                     <div
-                      className="cursor-pointer text-blue-600 flex items-center space-x-2 pb-4 pt-4"
+                      className="cursor-pointer flex items-center space-x-2 pb-4 pt-4"
                       onClick={() => {
                         setSubmenuOpen(false);
                         setActiveItem(null);
                         router.push("/");
                       }}
                     >
-                      <ArrowLeft size={15} />
-                      <span className="font-semibold">{activeItem.name}</span>
+                      <ArrowLeftSvg />
+                      <span className="font-medium text-sm">{activeItem.name}</span>
                     </div>
 
                     {activeItem.subCategories?.map((subCategory) => (
                       <div>
-                        <p className="text-sidebar-lightGray font-normal text-xs py-2">
+                        <p className="text-sidebar-lightGray dark:text-Darksidebar-gray-100 font-normal text-xs py-2">
                           {subCategory.Category}
                         </p>
                         <div>
@@ -655,15 +633,40 @@ const Sidebar = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+
             </div>
           </div>
         </div>
 
         {/* Footer Section */}
         <div className="mt-auto">
-          <div className="text-sm mt-4">
+          <AnimatePresence>
+            {!submenuOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <DraggableCards />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div>
+            <div className="flex items-center space-x-2 flex-wrap pb-3 cursor-pointer">
+              <p className="text-sidebar-lightGray dark:text-Darksidebar-gray-100 text-sm">Usage</p>
+              <div className="pt-1">
+                <ArrowRightSvg />
+              </div>
+            </div>
+            <div className="w-full">
+              <ProgressBar icon={<TeamsSvg />} label="Teams" current={150} total={1000} />
+              <ProgressBar icon={<TeamsSvg />} label="Teams" current={150} total={1000} />
+            </div>
+          </div>
+          <div className="text-sm mt-6">
             <div className="relative"> {/* Ensure this is relative for modal positioning */}
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center hover:bg-gray-200 dark:hover:bg-Darksidebar-slate-400 py-2 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <HelpSvg />
                   <p>Help</p>
@@ -674,14 +677,9 @@ const Sidebar = () => {
                   <button
                     ref={helpIconRef}
                     onClick={() => setModalOpen(!modalOpen)}
-                    className="pr-10 pt-1 cursor-pointer"
+                    className="pr-6 pt-1 cursor-pointer"
                   >
-                    <Image
-                      src="/images/chevron-right.svg"
-                      alt="right arrow"
-                      width={5}
-                      height={4}
-                    />
+                    <ChevronRightSvg/>
                   </button>
 
                   {modalOpen && (

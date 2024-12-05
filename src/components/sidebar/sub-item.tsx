@@ -20,9 +20,9 @@ const SubMenuItem = ({ item }: { item: ISubItem }) => {
 
   return (
     <div
-      className={`text-sm hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-gray-300 cursor-pointer p-2 my-1 rounded-lg${isActive
-          ? " bg-blue-100 dark:bg-gray-600 text-blue-600 dark:text-gray-200"
-          : " text-sidebar-darkGray dark:text-gray-200"
+      className={`text-sm hover:bg-gray-200 dark:hover:bg-Darksidebar-slate-400 cursor-pointer p-2 my-1 rounded-lg ${isActive
+          ? " dark:bg-Darksidebar-blue-100 bg-sidebar-lightBlue  text-sidebar-lightBlue2"
+          : "dark:text-sidebar-offwhite"
         }`}
       onClick={onClick}
     >

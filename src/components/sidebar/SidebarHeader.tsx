@@ -2,6 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import SearchSvg from '../icons/searchSvg';
+import ToggleButtonSvg from '../icons/toggleButtonSvg';
+import ChevronRightSvg from '../icons/chevronRightSvg';
+import TickSvg from '../icons/tickSvg';
 
 interface MenuItem {
     label: string;
@@ -108,15 +112,13 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ userName, profilePic }) =
     };
 
     const handleWorkspaceClick = (workspaceLabel: string, workspaceHref: string) => {
-        // Set selected workspace
         setSelectedWorkspace(workspaceLabel);
-        // Navigate to the workspace URL
         router.push(workspaceHref);
     };
 
     return (
         <div className="flex space-x-2 items-center w-full justify-between pb-4 text-sidebar-darkGray dark:text-sidebar-offwhite2">
-            <div className="flex items-center justify-between p-2 bg-white shadow-md rounded-lg border h-10">
+            <div className="flex items-center justify-between px-2 bg-white dark:bg-Darksidebar-darkgray shadow-md rounded-lg border-sidebar-lightGray3 dark:border-transparent h-10">
                 <div className="flex items-center space-x-3">
                     <div className="relative">
                         <Image
@@ -127,43 +129,39 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ userName, profilePic }) =
                             className="rounded-full object-cover"
                         />
                     </div>
-                    <span className="text-gray-800 font-medium truncate max-w-[90px]">{userName}</span>
+                    <span className="font-medium truncate max-w-[90px]">{userName}</span>
                 </div>
 
-                {/* Toggle Button */}
                 <div
                     ref={toggleButtonRef}
                     onClick={handleToggleClick}
                     className="cursor-pointer pl-2"
                 >
-                    <Image
-                        src="/images/toggleBtn.svg"
-                        alt="Toggle Menu"
-                        width={20}
-                        height={20}
-                        className="rounded-full object-cover"
-                    />
+                    <ToggleButtonSvg />
                 </div>
                 {isModalOpen && modalPosition && (
                     <motion.div
-                        key={isModalOpen ? "open" : "closed"} // Force re-render
+                        key={isModalOpen ? "open" : "closed"}
                         ref={modalRef}
-                        className="fixed bg-white py-4 shadow-lg text-sm rounded-lg z-30 w-[260px] border dark:bg-gray-800 dark:text-gray-300"
+                        className="fixed bg-white dark:bg-Darksidebar-slate-100 py-4 shadow-lg text-sm rounded-lg z-50 w-[260px]  border-sidebar-lightGray3 dark:border-Darksidebar-slate-300"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
                         style={{
-                            top: '60px',
+                            top: '63px',
                             left: '16px',
                         }}
                     >
-                        {/* Dynamic Menu Items */}
                         <div className="space-y-2">
                             <div className="px-4 flex items-center space-x-4 justify-between py-1">
                                 <p className="">Dark Mode</p>
                                 <label className="switch">
-                                    <input onClick={handleToggle} type="checkbox" />
+                                    <input
+                                        onClick={handleToggle}
+                                        type="checkbox"
+                                        checked={isDarkMode}
+                                    />
                                     <span className="slider round"></span>
                                 </label>
                             </div>
@@ -175,31 +173,24 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ userName, profilePic }) =
                                             {category.items.map((item) => (
                                                 <div
                                                     key={item.label}
-                                                    className={`relative group ${item.border ? 'border-b' : ''} `}
+                                                    className={`relative group ${item.border ? 'border-b border-sidebar-lightGray3 dark:border-Darksidebar-slate-300' : ''} `}
                                                     onMouseEnter={() => item.submenu && setHoveredMenu(item.label)}
                                                     onMouseLeave={() => item.submenu && setHoveredMenu(null)}
                                                 >
                                                     <a
                                                         href={item.href || '#'}
-                                                        className={`px-2 py-2 flex items-center justify-between cursor-pointer transition mx-2 ${item.submenu && hoveredMenu === item.label ? 'bg-sidebar-offwhite rounded-md' : ''}`}
+                                                        className={`px-2 py-2 flex items-center justify-between cursor-pointer transition mx-2 ${item.submenu && hoveredMenu === item.label ? 'bg-sidebar-offwhite dark:bg-Darksidebar-slate-400 rounded-md' : ''}`}
                                                     >
                                                         <span>{item.label}</span>
-                                                        {item.shortcut && <span className="text-gray-400">{item.shortcut}</span>}
+                                                        {item.shortcut && <span className="text-[10px] text-sidebar-lightGray">{item.shortcut}</span>}
                                                         {item.submenu && (
-                                                            <Image
-                                                                src="/images/chevron-right.svg"
-                                                                alt="right arrow"
-                                                                width={6}
-                                                                height={5}
-                                                                className="rounded-full object-cover"
-                                                            />
+                                                            <ChevronRightSvg />
                                                         )}
                                                     </a>
 
-                                                    {/* Submenu */}
+                                                    {/* sebmenu of workspace switch */}
                                                     {item.submenu && hoveredMenu === item.label && (
-                                                        <div className="absolute left-full top-0 bg-white dark:bg-gray-700 border rounded-md shadow-lg z-40 w-[238px]">
-                                                            {/* Workspace Items */}
+                                                        <div className="absolute left-full top-0 bg-white dark:bg-Darksidebar-darkgray border-sidebar-lightGray3 dark:border-Darksidebar-slate-300 rounded-md shadow-lg z-40 w-[238px]">
                                                             {item.submenu.map((subItem, index) => (
                                                                 <a
                                                                     key={subItem.label}
@@ -207,7 +198,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ userName, profilePic }) =
                                                                     onClick={() =>
                                                                         handleWorkspaceClick(subItem.label, subItem.href || '#')
                                                                     }
-                                                                    className="block px-4 py-2 text-gray-700 hover:bg-sidebar-offwhite dark:text-gray-200 dark:hover:bg-gray-600 flex justify-between items-center space-x-3"
+                                                                    className="block px-4 py-2 hover:bg-sidebar-offwhite dark:hover:bg-Darksidebar-slate-400  flex justify-between items-center space-x-3"
                                                                 >
                                                                     <div className="flex space-x-3 items-center">
                                                                         {subItem.profilePic && (
@@ -222,29 +213,22 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ userName, profilePic }) =
                                                                         <span>{subItem.label}</span>
                                                                     </div>
                                                                     {selectedWorkspace === subItem.label && (
-                                                                        <Image
-                                                                            src="/images/tick.svg"
-                                                                            alt={subItem.label}
-                                                                            width={18}
-                                                                            height={18}
-                                                                            className="rounded-full object-cover"
-                                                                        />
+                                                                        <TickSvg />
                                                                     )}
                                                                 </a>
                                                             ))}
 
-                                                            {/* Border after workspaces */}
-                                                            <div className="border-t my-2"></div>
+                                                            <div className="border-sidebar-lightGray3 dark:border-Darksidebar-slate-300 border-t"></div>
 
                                                             <a
                                                                 href="#"
-                                                                className="block px-4 py-2 text-gray-700 hover:bg-sidebar-offwhite dark:text-gray-200 dark:hover:bg-gray-600 flex justify-between items-center space-x-3"
+                                                                className="block px-4 py-2 hover:bg-sidebar-offwhite dark:hover:bg-Darksidebar-slate-400 flex justify-between items-center space-x-3"
                                                             >
                                                                 <span>Create or Join a Workspace</span>
                                                             </a>
                                                             <a
                                                                 href="#"
-                                                                className="block px-4 py-2 text-gray-700 hover:bg-sidebar-offwhite dark:text-gray-200 dark:hover:bg-gray-600 flex justify-between items-center space-x-3"
+                                                                className="block px-4 pt-2 pb-3 hover:bg-sidebar-offwhite dark:hover:bg-Darksidebar-slate-400 flex justify-between items-center space-x-3"
                                                             >
                                                                 <span>Add an Account</span>
                                                             </a>
@@ -261,14 +245,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ userName, profilePic }) =
                     </motion.div>
                 )}
             </div>
-            <div className="bg-white shadow-md flex items-center rounded-lg border p-2 h-10">
-                <Image
-                    className=""
-                    src="/images/search.svg"
-                    alt="Logo"
-                    width={20}
-                    height={20}
-                />
+            <div className="bg-white dark:bg-Darksidebar-darkgray shadow-md flex items-center rounded-lg border-sidebar-lightGray3 dark:border-transparent p-2 h-10">
+                <SearchSvg />
             </div>
         </div>
     );
