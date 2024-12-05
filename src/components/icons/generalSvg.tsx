@@ -8,7 +8,7 @@ interface GeneralSvgProps {
 export default function GeneralSvg({ className = "", isActive = false }: GeneralSvgProps) {
     return (
         <div>
-            <svg className={cn("size-4 stroke-[#141622] dark:stroke-white",
+            <svg className={cn("  stroke-[#141622] dark:stroke-white",
                 className,
                  isActive && "stroke-[#3679FF] dark:stroke-[#3679FF]"
             )} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">

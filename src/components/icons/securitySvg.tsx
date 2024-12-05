@@ -8,7 +8,7 @@ interface SecuritySvgProps {
 export default function SecuritySvg({ className = "", isActive = false }: SecuritySvgProps) {
     return (
         <div>
-            <svg className={cn("size-4 stroke-[#141622] dark:stroke-white",
+            <svg className={cn("  stroke-[#141622] dark:stroke-white",
                 className,
                  isActive && "stroke-[#3679FF] dark:stroke-[#3679FF]"
             )}

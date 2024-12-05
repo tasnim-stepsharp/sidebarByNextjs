@@ -9,7 +9,7 @@ export default function InboxSvg({ className = "", isActive = false }: InboxSvgP
   return (
     <div>
       <svg
-        className={cn("size-4 stroke-[#141622] dark:stroke-white", className,
+        className={cn("  stroke-[#141622] dark:stroke-white", className,
           isActive && "stroke-[#3679FF] dark:stroke-[#3679FF]"
         )}
         width="18"

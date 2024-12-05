@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useState, useRef, ReactNode } from "react";
+import { useEffect, useState, useRef, ReactNode, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import SidebarItem from "./item";
 import SubMenuItem from "./sub-item";
 import HelpModal from "./helpmodal";
@@ -457,21 +456,7 @@ const Sidebar = () => {
     setActiveItem(item);
     setSubmenuOpen(!submenuOpen);
   };
-
-  useEffect(() => {
-    const result = findMatchingPath([...sectionOne, ...sectionTwo], pathname);
-
-    if (!result || !result?.subCategories || result?.subCategories?.length <= 0) {
-      setActiveItem(null);
-      setSubmenuOpen(false);
-      return;
-    }
-    setActiveItem(result);
-    setSubmenuOpen(true);
-  }, [pathname]);
-
-
-  function findMatchingPath(subCategories: any, pathName: any) {
+  const findMatchingPath = useCallback((subCategories: any, pathName: any) => {
     for (const item of subCategories) {
       if (item.path !== "/" && pathName.includes(item.path)) {
         return item;
@@ -484,7 +469,20 @@ const Sidebar = () => {
       }
     }
     return null;
-  }
+  }, []);
+
+  useEffect(() => {
+    const result = findMatchingPath([...sectionOne, ...sectionTwo], pathname);
+
+    if (!result || !result?.subCategories || result?.subCategories?.length <= 0) {
+      setActiveItem(null);
+      setSubmenuOpen(false);
+      return;
+    }
+    setActiveItem(result);
+    setSubmenuOpen(true);
+  }, [pathname, findMatchingPath]);
+
 
   useEffect(() => {
     if (modalOpen && helpIconRef.current) {
@@ -554,20 +552,20 @@ const Sidebar = () => {
                                     : "rotate-0 pt-1"
                                     }`}
                                 >
-                                  <DownArrowSvg/>
+                                  <DownArrowSvg />
                                 </div>
                               </button>
                             )}
                             <motion.div
                               className="dropdown-items mt-2"
-                              initial={{ opacity: 0, display: "none" }}  
+                              initial={{ opacity: 0, display: "none" }}
                               animate={{
                                 opacity: collapsedItems[index] ? 0 : 1,
-                                display: collapsedItems[index] ? "none" : "block",  
+                                display: collapsedItems[index] ? "none" : "block",
                               }}
                               exit={{
                                 opacity: 0,
-                                display: "none",  
+                                display: "none",
                               }}
                               transition={{
                                 duration: 0.3,
@@ -618,8 +616,8 @@ const Sidebar = () => {
                       <span className="font-medium text-sm">{activeItem.name}</span>
                     </div>
 
-                    {activeItem.subCategories?.map((subCategory) => (
-                      <div>
+                    {activeItem.subCategories?.map((subCategory, index) => (
+                      <div key={index}>
                         <p className="text-sidebar-lightGray dark:text-Darksidebar-gray-100 font-normal text-xs py-2">
                           {subCategory.Category}
                         </p>
@@ -629,6 +627,7 @@ const Sidebar = () => {
                           ))}
                         </div>
                       </div>
+
                     ))}
                   </motion.div>
                 )}
@@ -679,7 +678,7 @@ const Sidebar = () => {
                     onClick={() => setModalOpen(!modalOpen)}
                     className="pr-6 pt-1 cursor-pointer"
                   >
-                    <ChevronRightSvg/>
+                    <ChevronRightSvg />
                   </button>
 
                   {modalOpen && (

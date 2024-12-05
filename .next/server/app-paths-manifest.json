@@ -1,5 +1,8 @@
 {
   "/page": "app/page.js",
-  "/projects/page": "app/projects/page.js",
+  "/stepsharp/page": "app/stepsharp/page.js",
+  "/issues/page": "app/issues/page.js",
+  "/issues/domain/page": "app/issues/domain/page.js",
+  "/issues/library/page": "app/issues/library/page.js",
   "/views/page": "app/views/page.js"
 }
