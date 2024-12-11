@@ -1,5 +1,5 @@
 {
-  "name": "@tasnim-stepsharp/sidebarByNextjs", 
+  "name": "@tasnim-stepsharp/sidebarbynextjs", 
   "version": "1.0.0", 
   "description": "A customizable Sidebar component for Next.js applications with dynamic path matching and submenu support.",
   "main": "dist/index.js", 
