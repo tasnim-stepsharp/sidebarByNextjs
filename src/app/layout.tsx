@@ -1,7 +1,8 @@
+import React from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/sidebar";
-import { ThemeProvider} from "@/components/ThemeProvider"
+import Sidebar from "../components/sidebar/index";
+import { ThemeProvider} from "../components/ThemeProvider"
 
 const inter = Inter({ subsets: ["latin"] });
 

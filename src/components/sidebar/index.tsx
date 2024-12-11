@@ -26,13 +26,14 @@ import HelpSvg from "../icons/helpSvg";
 import {
   Menu,
 } from "lucide-react";
-import SidebarHeader from "./SidebarHeader";
-import DraggableCards from "./draggableCards";
+import SidebarHeader from "./sidebarHeader";
+import AnalyticsCards from "./analyticsCards";
 import ArrowRightSvg from "../icons/arrowRightSvg";
 import ProgressBar from "./progressbar";
 import ArrowLeftSvg from "../icons/arrowLeftSvg";
 import ChevronRightSvg from "../icons/chevronRightSvg";
 import DownArrowSvg from "../icons/downArrowSvg";
+import React from "react";
 interface MainItem {
   name: string;
   path: string;
@@ -456,43 +457,58 @@ const Sidebar = () => {
     setActiveItem(item);
     setSubmenuOpen(!submenuOpen);
   };
-  const findMatchingPath = useCallback((subCategories: any, pathName: any) => {
-    for (const item of subCategories) {
-      if (item.path !== "/" && pathName.includes(item.path)) {
-        return item;
-      }
-      if (item.subCategories) {
-        const found: any = findMatchingPath(item.subCategories, pathName);
-        if (found) {
+  const findMatchingPath = useCallback(
+    (mainItems: MainItem[], pathName: string): MainItem | null => {
+      for (const item of mainItems) {
+        // Check if the current item's path matches the pathname
+        if (item.path !== "/" && pathName.includes(item.path)) {
           return item;
         }
+
+        // If the item has subCategories, traverse them
+        if (item.subCategories) {
+          for (const subCategory of item.subCategories) {
+            if (subCategory.SubItems) {
+              for (const subItem of subCategory.SubItems) {
+                if (pathName.includes(subItem.path)) {
+                  return item;
+                }
+              }
+            }
+          }
+        }
       }
-    }
-    return null;
-  }, []);
+      return null;
+    },
+    []
+  );
 
   useEffect(() => {
-    const result = findMatchingPath([...sectionOne, ...sectionTwo], pathname);
+    // Dynamically gather all mainItems from mainNavs
+    const allMainItems = mainNavs.flatMap(nav => nav.mainItems || []);
 
-    if (!result || !result?.subCategories || result?.subCategories?.length <= 0) {
+    const result = findMatchingPath(allMainItems, pathname);
+
+    if (!result || !result.subCategories || result.subCategories.length <= 0) {
       setActiveItem(null);
       setSubmenuOpen(false);
       return;
     }
     setActiveItem(result);
     setSubmenuOpen(true);
-  }, [pathname, findMatchingPath]);
+  },
+  )
 
 
-  useEffect(() => {
-    if (modalOpen && helpIconRef.current) {
-      const rect = helpIconRef.current.getBoundingClientRect();
-      setModalPosition({
-        top: rect.top + window.scrollY - 230,
-        left: rect.right + window.scrollX - 20,
-      });
-    }
-  }, [modalOpen]);
+    useEffect(() => {
+      if (modalOpen && helpIconRef.current) {
+        const rect = helpIconRef.current.getBoundingClientRect();
+        setModalPosition({
+          top: rect.top + window.scrollY - 230,
+          left: rect.right + window.scrollX - 20,
+        });
+      }
+    }, [modalOpen]);
 
 
   const [collapsedItems, setCollapsedItems] = useState<Record<number, boolean>>({});
@@ -647,7 +663,7 @@ const Sidebar = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <DraggableCards />
+                <AnalyticsCards />
               </motion.div>
             )}
           </AnimatePresence>

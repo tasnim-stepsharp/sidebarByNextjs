@@ -1,4 +1,5 @@
-import cn from "@/lib/cn";
+import React from "react";
+import cn from "../../lib/cn";
 
 export default function DownArrowSvg() {
     return (
